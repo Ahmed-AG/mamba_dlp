@@ -9,7 +9,7 @@ import logging
 
 
 import data_source
-import data_finders
+import data_finder
 import aws
 import state_object
 
@@ -46,15 +46,14 @@ def lambda_handler(event, context):
 
 def display_banner():
 
-
-    print(" _____ _                 _      _ _       ")
-    print("/  __ \ |               | |    | | |      ")
-    print("| /  \/ | ___  _   _  __| |  __| | |_ __  ")
-    print("| |   | |/ _ \| | | |/ _` | / _` | | '_ \ ")
-    print("| \__/\ | (_) | |_| | (_| || (_| | | |_) |")
-    print(" \____/_|\___/ \__,_|\__,_| \__,_|_| .__/ ")
-    print("                        ______     | |    ")
-    print("                       |______|    |_|  	 ")
+    print("                           _                _ _       ")
+    print("                          | |              | | |      ")
+    print(" _ __ ___   __ _ _ __ ___ | |__   __ _   __| | |_ __  ")
+    print("| '_ ` _ \ / _` | '_ ` _ \| '_ \ / _` | / _` | | '_ \ ")
+    print("| | | | | | (_| | | | | | | |_) | (_| || (_| | | |_) |")
+    print("|_| |_| |_|\__,_|_| |_| |_|_.__/ \__,_| \__,_|_| .__/ ")
+    print("                                    ______     | |    ")
+    print("                                   |______|    |_|    ")
 
     return
 
@@ -66,7 +65,7 @@ def load_conf(conf_file_location):
 
 def full_scan(config , state ):
 
-	finder = data_finders.finder(config['global_conf']['dynamo_table'])
+	finder = data_finder.finder(config['global_conf']['dynamo_table'])
 	s3 = data_source.s3(config['global_conf']['aws_accounts'] , config['global_conf']['aws_role'])
 	s3.objects = s3.find_objects()
 	sesitive_data = finder.scan_objects(s3)
@@ -74,7 +73,7 @@ def full_scan(config , state ):
 	return sesitive_data
 
 def scan_single_object(config , state ,  object):
-	finder = data_finders.finder(config['global_conf']['dynamo_table'])
+	finder = data_finder.finder(config['global_conf']['dynamo_table'])
 	s3 = data_source.s3(config['global_conf']['aws_accounts'] , config['global_conf']['aws_role'])
 	s3.objects = json.loads(object)
 	sesitive_data = finder.scan_objects(s3)
@@ -131,11 +130,10 @@ def main():
 		print("Deploy Cloud formation template install realtime DLP")
 	else:
 	    print ("Usage: ")
-	    print ("cloud_dlp.py --run scan_object --object <Json Object>")
-	    print ("cloud_dlp.py --run full_scan")
+	    print ("mamba_dlp.py --run scan_object --object <Json Object>")
+	    print ("mamba_dlp.py --run full_scan")
 	    
 
 if sys.argv[0] != "/var/runtime/awslambda/bootstrap.py":
 	main()
 
-#sudo python3 code/cloud_dlp.py --run scan_object --object "{\"objects\" : [{\"object_id\" : \"523256993465:agentd2019:test_data.txt\", \"object_type\" : \"s3\",\"aws_account\": \"523256993465\",\"bucket\": \"agentd2019\", \"key\": \"test_data.txt\" }]}"
