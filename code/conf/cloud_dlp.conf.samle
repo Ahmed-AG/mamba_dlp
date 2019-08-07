@@ -1,0 +1,7 @@
+{	
+	"global_conf":{
+		"aws_accounts": ["12345689012"],
+		"aws_role" : "Role-to-be-assumed",
+		"dynamo_table" : "sensitive_data"
+	}
+}
