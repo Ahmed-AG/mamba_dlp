@@ -1,11 +1,5 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
-*.py[cod]
-*$py.class
-
-# C extensions
-*.so
-
 # Distribution / packaging
 .Python
 build/
@@ -102,3 +96,7 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+test_data/*
+deploy/*
+code/conf/cloud_dlp.conf
+*.DS_Store
