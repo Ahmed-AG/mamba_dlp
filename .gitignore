@@ -99,4 +99,5 @@ venv.bak/
 test_data/*
 deploy/*
 code/conf/cloud_dlp.conf
+code/conf/mamba_dlp.conf
 *.DS_Store
