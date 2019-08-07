@@ -14,22 +14,34 @@ Getting Started
 ----------------
 
 - **Scan all files in all buckets:**
-	python3 code/mamba_dlp.py --run full_scan
+	```sh
+	$python3 code/mamba_dlp.py --run full_scan
+	```
+- **Scan in realtime:** to configure mamba_dlp to scan files in as they are updated or uploaded to a bucket:
 
-- **Scan in realtime:**
-
-1 - Create lambda: mamba_dlp()
-2 - Configure all buckets to invoke mamba_dlp() upon creating uploading or updating a new file
-3 - Create a new role that has read access to all buckets. example: mamba_lambda_read_buckets
-4 - Create  a Lambda role that allows mamba_dlp to assume "mamba_lambda_read_buckets"
+- Clone this repo
+- configure code/conf/mamba_dlp.conf
+- Create a new role that has read access to all buckets. example: mamba_lambda_read_buckets
+- Create  a Lambda role that allows mamba_dlp to assume "mamba_lambda_read_buckets"
+- Create lambda_code.zip:
+	```sh
+	$cd code
+	$chmod +rw *
+	$zip -r labda_code.zip *
+	```
+- Create lambda "mamba_dlp()" in AWS account and upload lambda_code.zip
+- configure lambda handler to point to mamba_dlp.lambda_handler
+- Configure all buckets to invoke mamba_dlp() upon creating uploading or updating a new file
 
 - **Scan a single file:**
 
+	```sh
 	python3 code/mamba_dlp.py --run scan_object --object \
 		"{\"objects\" : [{\"object_id\" : \"<AWS_ACCOUNT>:<BUCKET:KEY\",\
 		 \"object_type\" : \"s3\",\
 		 \"aws_account\": \"<AWS_ACCOUNT>\",\
 		 \"bucket\": \"<BUCKET>\", \"key\": \"<KEY>\" }]}"
+	```
 
 
 
