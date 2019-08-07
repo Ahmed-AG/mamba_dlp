@@ -1,14 +1,21 @@
-#mamba_dlp
-
 
 mamba_dlp
 =========
 
 Mamba_dlp is a tool for searching for sensitive data in cloud infrastructures.
 
-The key features of Mamba_dlp:
+Current features of Mamba_dlp:
 
-- **Search for sensitive data**: using customizable regex, mamba_dlp scans through data sources and reports any sensitive data
+- **Search for sensitive data**: using customizable regex, mamba_dlp scans through data sources and reports any sensitive data. mamba_dlp can run full scans or can scan a single object 
+- **Search for sensitive data in:**
+	-S3 Buckets
+-**Search for the following data types:**
+	-Credit Cards
+	-Emails
+	-Any custom regex
+-**Output:**
+	-Json object
+	-Dynamo table
 
 Getting Started 
 ----------------
@@ -19,19 +26,19 @@ Getting Started
 	```
 - **Scan in realtime:** to configure mamba_dlp to scan files in as they are updated or uploaded to a bucket:
 
-- Clone this repo
-- configure code/conf/mamba_dlp.conf
-- Create a new role that has read access to all buckets. example: mamba_lambda_read_buckets
-- Create  a Lambda role that allows mamba_dlp to assume "mamba_lambda_read_buckets"
-- Create lambda_code.zip:
-	```sh
-	$cd code
-	$chmod +rw *
-	$zip -r labda_code.zip *
-	```
-- Create lambda "mamba_dlp()" in AWS account and upload lambda_code.zip
-- configure lambda handler to point to mamba_dlp.lambda_handler
-- Configure all buckets to invoke mamba_dlp() upon creating uploading or updating a new file
+	- Clone this repo
+	- configure code/conf/mamba_dlp.conf
+	- Create a new role that has read access to all buckets. example: mamba_lambda_read_buckets
+	- Create  a Lambda role that allows mamba_dlp to assume "mamba_lambda_read_buckets"
+	- Create lambda_code.zip:
+		```sh
+		$cd code
+		$chmod +rw *
+		$zip -r labda_code.zip *
+		```
+	- Create lambda "mamba_dlp()" in AWS account and upload lambda_code.zip
+	- configure lambda handler to point to mamba_dlp.lambda_handler
+	- Configure all buckets to invoke mamba_dlp() upon creating uploading or updating a new file
 
 - **Scan a single file:**
 
