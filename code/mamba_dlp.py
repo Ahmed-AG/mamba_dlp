@@ -97,7 +97,7 @@ def main():
 
 	#load configurations
 	if args.config == None:
-		conf_file = "code/conf/cloud_dlp.conf"
+		conf_file = "code/conf/mamba_dlp.conf"
 	else:
 		conf_file = args.config
 
