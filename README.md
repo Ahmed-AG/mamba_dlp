@@ -27,6 +27,9 @@ Getting Started
 - **Scan in real time:** to configure mamba_dlp to scan files in as they are updated or uploaded to a bucket:
 
 	- Clone this repo
+	- Create a Dynamo table that has the following:
+		-Primary partition key : object_id (String)
+		-Primary sort key : location (Number)
 	- configure code/conf/mamba_dlp.conf
 	- Create a new role that has read access to all buckets. example: mamba_lambda_read_buckets
 	- Create  a Lambda role that allows mamba_dlp to assume "mamba_lambda_read_buckets"
@@ -34,7 +37,7 @@ Getting Started
 		```sh
 		$cd code
 		$chmod +rw *
-		$zip -r labda_code.zip *
+		$zip -r lambda_code.zip *
 		```
 	- Create lambda "mamba_dlp()" in AWS account and upload lambda_code.zip
 	- configure lambda handler to point to mamba_dlp.lambda_handler
