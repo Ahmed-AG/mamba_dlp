@@ -28,8 +28,8 @@ Getting Started
 
 	- Clone this repo
 	- Create a Dynamo table that has the following:
-		-Primary partition key : object_id (String)
-		-Primary sort key : location (Number)
+		- Primary partition key : object_id (String)
+		- Primary sort key : location (Number)
 	- configure code/conf/mamba_dlp.conf
 	- Create a new role that has read access to all buckets. example: mamba_lambda_read_buckets
 	- Create  a Lambda role that allows mamba_dlp to assume "mamba_lambda_read_buckets"
