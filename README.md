@@ -24,7 +24,7 @@ Getting Started
 	```sh
 	$python3 code/mamba_dlp.py --run full_scan
 	```
-- **Scan in realtime:** to configure mamba_dlp to scan files in as they are updated or uploaded to a bucket:
+- **Scan in real time:** to configure mamba_dlp to scan files in as they are updated or uploaded to a bucket:
 
 	- Clone this repo
 	- configure code/conf/mamba_dlp.conf
