@@ -1,6 +1,6 @@
-<BETA>
-mamba_dlp
-=========
+
+BETA - mamba_dlp
+================
 
 Mamba_dlp is a tool for searching for sensitive data in cloud infrastructures.
 
