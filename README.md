@@ -45,6 +45,14 @@ Getting Started
 
 - **Scan a single file:**
 
+	To scan a single file provide the AWS account number, the bucket name and the key name:
+
+	```sh
+	 python3 code/mamba_dlp.py --run scan_object --bucket <bucket name> --key <key name> --aws_account <aws account name>
+	 ```
+
+	Or manuall construct the object json descriptor:
+
 	```sh
 	python3 code/mamba_dlp.py --run scan_object --object \
 		"{\"objects\" : [{\"object_id\" : \"<AWS_ACCOUNT>:<BUCKET:KEY\",\

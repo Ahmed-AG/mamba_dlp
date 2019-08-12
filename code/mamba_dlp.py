@@ -68,6 +68,13 @@ def display_banner():
 
     return
 
+def print_usage():
+	print ("Usage: ")
+	print ("mamba_dlp.py --run full_scan")
+	print ("mamba_dlp.py --run scan_object --object <Json Object>")
+	print ("mamba_dlp.py --run scan_object --aws_account <aws account> --bucket <bucket name> --key <key>")
+	return
+
 def load_conf(conf_file_location):
 		conf_file= open(conf_file_location,'r')
 		conf=json.load(conf_file)
@@ -113,6 +120,9 @@ def main():
 	parser.add_argument('--run', required=1)
 	parser.add_argument('--config')
 	parser.add_argument('--object')
+	parser.add_argument('--key')
+	parser.add_argument('--bucket')
+	parser.add_argument('--aws_account')
 
 	args = parser.parse_args()
 
@@ -123,11 +133,6 @@ def main():
 		conf_file = args.config
 
 	config = load_conf(conf_file)
-
-	#aws_accounts = config['global_conf']['aws_accounts']
-	#aws_role = config['global_conf']['aws_role']
-	#dynamo_table = config['global_conf']['dynamo_table']
-	#secret_regexs
 
 	#Start logic
 	if args.run == "full_scan":
@@ -143,18 +148,32 @@ def main():
 			scan_result = scan_single_object(config , state , args.object)
 			print("Sensitive Data Found:")
 			print(json.dumps(scan_result , sort_keys=True , indent=2))
+		elif args.bucket != None and args.key != None and args.aws_account != None:
+			#Build the object from arguments
+			object_id = args.aws_account + ":" + args.bucket + ":" + args.key
+			object = {"objects":[ {
+			"object_id" : object_id,
+			"object_type" : "s3",
+			"aws_account" : args.aws_account,
+			"bucket" : args.bucket,
+			"key" : args.key
+			}]}
+
+			state = state_object.sensitive_data(config['global_conf']['dynamo_table'])
+			scan_result = scan_single_object(config , state , json.dumps(object))
+			print("Sensitive Data Found:")
+			print(json.dumps(scan_result , sort_keys=True , indent=2))
+
 		else:
-			print("Please provide object_id")
+			print_usage()
 			exit()
 
 	elif args.run == "deploy_real_time_dlp":
 		# Deploy Cloud formation template install realtime DLP
 		print("Deploy Cloud formation template install realtime DLP")
 	else:
-	    print ("Usage: ")
-	    print ("mamba_dlp.py --run scan_object --object <Json Object>")
-	    print ("mamba_dlp.py --run full_scan")
-	    
+		print_usage()
+	    	    
 
 if sys.argv[0] != "/var/runtime/awslambda/bootstrap.py":
 	main()

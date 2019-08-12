@@ -71,7 +71,7 @@ class action():
 
         except botocore.exceptions.ClientError as e:
             if e.response['Error']['Message'] == "Cannot provide multiple Tags with the same key":
-                print("Action: "+ resource_arn + " Already Tagged: " + str(new_tag_set))
+                print("Action: "+ resource_arn + " Already Tagged")
             else:
                 raise
 
