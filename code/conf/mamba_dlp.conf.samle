@@ -2,6 +2,29 @@
 	"global_conf":{
 		"aws_accounts": ["12345689012"],
 		"aws_role" : "Role-to-be-assumed",
-		"dynamo_table" : "sensitive_data"
+		"dynamo_table" : "sensitive_data",
+		"actions":[{
+			"tagging" :[
+					{
+					 "data_type":"payment_card",
+					 "enabled" :"true",
+					 "tag_set" : 
+					 	{
+					 		"Key": "pci_sensitive_data" , 
+					 		"Value": "true" 
+					 		}
+					},
+					{
+					 "data_type":"email_address",
+					 "enabled" :"true",
+ 					 "tag_set" : 
+					 	{
+					 		"Key": "email_sensitive_data" , 
+					 		"Value": "true" 
+					 		}
+					}
+				],
+			"enabled" :"true"
+			}]
+		}
 	}
-}
