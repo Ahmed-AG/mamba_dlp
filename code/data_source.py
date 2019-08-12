@@ -20,28 +20,36 @@ class s3():
 
         for aws_account in self.aws_accounts:
     
-            assumedRoleObject=aws.assume_role(aws_account,self.aws_role)         
+            #assumedRoleObject=aws.assume_role(aws_account,self.aws_role)         
             
-            client = boto3.client('s3',
-                aws_access_key_id = assumedRoleObject['Credentials']['AccessKeyId'],
-                aws_secret_access_key = assumedRoleObject['Credentials']['SecretAccessKey'],
-                aws_session_token = assumedRoleObject['Credentials']['SessionToken']
-            )
+            #client = boto3.client('s3',
+            #    aws_access_key_id = assumedRoleObject['Credentials']['AccessKeyId'],
+            #    aws_secret_access_key = assumedRoleObject['Credentials']['SecretAccessKey'],
+            #    aws_session_token = assumedRoleObject['Credentials']['SessionToken']
+            #)
+            client = boto3.client('s3')
+            try:
+                buckets=client.list_buckets()
 
-            buckets=client.list_buckets()
+                for bucket in buckets['Buckets']:
+                    keys = self.list_keys(aws_account,bucket['Name'])
+                    for key in keys:
+                        object_id = aws_account + ":" + bucket['Name'] + ":" + key['Key']
+                        
+                        objects['objects'].append({'object_id' : object_id,
+                             'object_type' : 's3',
+                             'aws_account': aws_account,
+                             'bucket': bucket['Name'], 
+                             'key': key['Key']
+                            }
+                            )
+            except botocore.exceptions.ClientError as e:
+                if e.response['Error']['Code'] == "AccessDenied":
+                    print(json.dumps(e.response, sort_keys=True , indent=2))
+                else:
+                    print(e.response)
+                    raise
 
-            for bucket in buckets['Buckets']:
-                keys = self.list_keys(aws_account,bucket['Name'])
-                for key in keys:
-                    object_id = aws_account + ":" + bucket['Name'] + ":" + key['Key']
-                    
-                    objects['objects'].append({'object_id' : object_id,
-                         'object_type' : 's3',
-                         'aws_account': aws_account,
-                         'bucket': bucket['Name'], 
-                         'key': key['Key']
-                        }
-                        )
                     #print(json.dumps(objects))
                     #break
 
@@ -52,28 +60,32 @@ class s3():
 
     def list_keys(self,aws_account,bucket):
 
-        assumedRoleObject = aws.assume_role(aws_account,self.aws_role)
-        client = boto3.client('s3',
-            aws_access_key_id = assumedRoleObject['Credentials']['AccessKeyId'],
-            aws_secret_access_key = assumedRoleObject['Credentials']['SecretAccessKey'],
-            aws_session_token = assumedRoleObject['Credentials']['SessionToken']
-        )
-
+        #assumedRoleObject = aws.assume_role(aws_account,self.aws_role)
+        #client = boto3.client('s3',
+        #    aws_access_key_id = assumedRoleObject['Credentials']['AccessKeyId'],
+        #    aws_secret_access_key = assumedRoleObject['Credentials']['SecretAccessKey'],
+        #    aws_session_token = assumedRoleObject['Credentials']['SessionToken']
+        #)
+        client = boto3.client('s3')
         objects = client.list_objects(
             Bucket = bucket
         )
-        keys = objects['Contents']
 
-        return keys
+        if ('Contents' in objects):
+            return objects['Contents']
+        else:
+            return []
+
 
     def download_key(self,object):
-        assumedRoleObject=aws.assume_role(object['aws_account'],self.aws_role) 
+        #assumedRoleObject=aws.assume_role(object['aws_account'],self.aws_role) 
 
-        s3 = boto3.resource('s3',
-            aws_access_key_id = assumedRoleObject['Credentials']['AccessKeyId'],
-            aws_secret_access_key = assumedRoleObject['Credentials']['SecretAccessKey'],
-            aws_session_token = assumedRoleObject['Credentials']['SessionToken']
-            )
+        #s3 = boto3.resource('s3',
+        #    aws_access_key_id = assumedRoleObject['Credentials']['AccessKeyId'],
+        #    aws_secret_access_key = assumedRoleObject['Credentials']['SecretAccessKey'],
+        #    aws_session_token = assumedRoleObject['Credentials']['SessionToken']
+        #    )
+        s3 = boto3.resource('s3')
         
         bucket = object['bucket']
         key = object['key']
@@ -81,12 +93,14 @@ class s3():
 
         
         try:
-            print("Downloading: " + object['bucket']  + ":" + object['key'])
+            print("Scanning: " + object['bucket']  + ":" + object['key'])
             response = s3.Bucket(bucket).download_file(key, download_file)
 
         except botocore.exceptions.ClientError as e:
             if e.response['Error']['Code'] == "404":
                 return "Object: " + key + " in " + bucket + "does not exist."
+            elif e.response['Error']['Code'] == "403":
+                print(e.response['Error']['Code'] + ":" + e.response['Error']['Message'])
             else:
                 raise
 

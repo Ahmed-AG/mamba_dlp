@@ -102,3 +102,4 @@ code/conf/cloud_dlp.conf
 code/conf/mamba_dlp.conf
 *.DS_Store
 code/lambda_code.zip
+code/notes.txt

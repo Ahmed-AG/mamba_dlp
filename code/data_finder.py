@@ -73,6 +73,9 @@ class finder():
                             'location' : str(idx)
                             }
                         dynamo_response = self.state.save_sensitive_object(data_object)
+                        
+                        #Start action
+                        
         return dynamo_response
 
     def mask_data(self , data_set , data_type):

@@ -12,6 +12,7 @@ import data_source
 import data_finder
 import aws
 import state_object
+import actions
 
 def lambda_handler(event, context):
 	logger = logging.getLogger()
@@ -70,6 +71,11 @@ def full_scan(config , state ):
 	s3.objects = s3.find_objects()
 	sesitive_data = finder.scan_objects(s3)
 
+	#Actions
+	action = actions.action(config)
+	action_response = action.initiate(sesitive_data)
+	
+
 	return sesitive_data
 
 def scan_single_object(config , state ,  object):
@@ -77,6 +83,12 @@ def scan_single_object(config , state ,  object):
 	s3 = data_source.s3(config['global_conf']['aws_accounts'] , config['global_conf']['aws_role'])
 	s3.objects = json.loads(object)
 	sesitive_data = finder.scan_objects(s3)
+	
+	#Actions
+	action = actions.action(config)
+	action_response = action.initiate(sesitive_data)
+	#print(action_response)
+
 
 	return sesitive_data
 
