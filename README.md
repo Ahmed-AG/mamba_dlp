@@ -24,25 +24,6 @@ Getting Started
 	```sh
 	$python3 code/mamba_dlp.py --run full_scan
 	```
-- **Scan in real time:** to configure mamba_dlp to scan files in as they are updated or uploaded to a bucket:
-
-	- Clone this repo
-	- Create a Dynamo table that has the following:
-		- Primary partition key : object_id (String)
-		- Primary sort key : location (Number)
-	- configure code/conf/mamba_dlp.conf
-	- Create a new role that has read access to all buckets. example: mamba_lambda_read_buckets
-	- Create  a Lambda role that allows mamba_dlp to assume "mamba_lambda_read_buckets"
-	- Create lambda_code.zip:
-		```sh
-		$cd code
-		$chmod +rw *
-		$zip -r lambda_code.zip *
-		```
-	- Create lambda "mamba_dlp()" in AWS account and upload lambda_code.zip
-	- configure lambda handler to point to mamba_dlp.lambda_handler
-	- Configure all buckets to invoke mamba_dlp() upon creating uploading or updating a new file
-
 - **Scan a single file:**
 
 	To scan a single file provide the AWS account number, the bucket name and the key name:
@@ -61,5 +42,22 @@ Getting Started
 		 \"bucket\": \"<BUCKET>\", \"key\": \"<KEY>\" }]}"
 	```
 
+- **Scan in real time:** to configure mamba_dlp to scan files in as they are updated or uploaded to a bucket:
 
+	- Clone this repo
+	- Create a Dynamo table that has the following:
+		- Primary partition key : object_id (String)
+		- Primary sort key : location (Number)
+	- configure code/conf/mamba_dlp.conf
+	- Create a new role that has read access to all buckets. example: mamba_lambda_read_buckets
+	- Create  a Lambda role that allows mamba_dlp to assume "mamba_lambda_read_buckets"
+	- Create lambda_code.zip:
+		```sh
+		$cd code
+		$chmod +rw *
+		$zip -r lambda_code.zip *
+		```
+	- Create lambda "mamba_dlp()" in AWS account and upload lambda_code.zip
+	- configure lambda handler to point to mamba_dlp.lambda_handler
+	- Configure all buckets to invoke mamba_dlp() upon creating uploading or updating a new file
 
