@@ -18,11 +18,15 @@ def lambda_handler(event, context):
 	logger = logging.getLogger()
 	logger.setLevel(logging.INFO)
 
-	conf_file = "conf/cloud_dlp.conf"
+	conf_file = "conf/mamba_dlp.conf"
 	config = load_conf(conf_file)
+
+	#Obtain local account ID
+	client = boto3.client("sts")
+	aws_account = client.get_caller_identity()["Account"]
+
 	#Read event
 	for record in event['Records']:
-		aws_account='523256993465'
 		bucket=record['s3']['bucket']['name']
 		key=record['s3']['object']['key']
 		object_id=aws_account + ":" + bucket + ":" + key
@@ -39,9 +43,15 @@ def lambda_handler(event, context):
 	print(json.dumps(object_to_scan , sort_keys=True , indent=2))
 	#run scan
 	state = state_object.sensitive_data(config['global_conf']['dynamo_table'])
-	scan_result = scan_single_object(config , state , json.dumps(object_to_scan))
+	sesitive_data = scan_single_object(config , state , json.dumps(object_to_scan))
+	
+
+	action = actions.action(config)
+	action_response = action.initiate(sesitive_data)
+	
+
 	print("Sensitive Data Found:")
-	print(json.dumps(scan_result , sort_keys=True , indent=2))
+	print(json.dumps(sesitive_data , sort_keys=True , indent=2))
 
 	return
 
