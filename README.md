@@ -91,6 +91,24 @@ Getting Started
 	```sh
 	$python3 code/mamba_dlp.py --run full_scan
 	```
+- **Scan a single file:**
+
+	To scan a single file provide the AWS account number, the bucket name and the key name:
+
+	```sh
+	 python3 code/mamba_dlp.py --run scan_object --bucket <bucket name> --key <key name> --aws_account <aws account name>
+	 ```
+
+	Or manually construct the object json descriptor:
+
+	```sh
+	python3 code/mamba_dlp.py --run scan_object --object \
+		"{\"objects\" : [{\"object_id\" : \"<AWS_ACCOUNT>:<BUCKET:KEY\",\
+		 \"object_type\" : \"s3\",\
+		 \"aws_account\": \"<AWS_ACCOUNT>\",\
+		 \"bucket\": \"<BUCKET>\", \"key\": \"<KEY>\" }]}"
+	```
+
 - **Scan in real time:** to configure mamba_dlp to scan files in as they are updated or uploaded to a bucket:
 
 	- Clone this repo
@@ -109,24 +127,4 @@ Getting Started
 	- Create lambda "mamba_dlp()" in AWS account and upload lambda_code.zip
 	- configure lambda handler to point to mamba_dlp.lambda_handler
 	- Configure all buckets to invoke mamba_dlp() upon creating uploading or updating a new file
-
-- **Scan a single file:**
-
-	To scan a single file provide the AWS account number, the bucket name and the key name:
-
-	```sh
-	 python3 code/mamba_dlp.py --run scan_object --bucket <bucket name> --key <key name> --aws_account <aws account name>
-	 ```
-
-	Or manuall construct the object json descriptor:
-
-	```sh
-	python3 code/mamba_dlp.py --run scan_object --object \
-		"{\"objects\" : [{\"object_id\" : \"<AWS_ACCOUNT>:<BUCKET:KEY\",\
-		 \"object_type\" : \"s3\",\
-		 \"aws_account\": \"<AWS_ACCOUNT>\",\
-		 \"bucket\": \"<BUCKET>\", \"key\": \"<KEY>\" }]}"
-	```
-
-
 
