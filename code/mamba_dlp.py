@@ -89,10 +89,10 @@ def run_configure():
 	#Configure actions
 	config['global_conf']['actions'] = []
 
+	#The loop is a for future additional actions
 	#configure tagging 
-	tagging = {'tagging':[]}
-	# the loop is a for future additional actions
 	while(1):
+		tagging = {'tagging':[]}
 		supported_data_types =["payment_card" , "email_address"]
 		print("Configuring Actions")
 		tagging_enabled = input_radio_choice("Enable tagging of resources upon detection of sensitive data? (true/false): ",["true", "false"])
@@ -187,11 +187,10 @@ def main():
 	parser.add_argument('--key')
 	parser.add_argument('--bucket')
 	parser.add_argument('--aws_account')
-
 	args = parser.parse_args()
 
-	default_conf_file = "code/conf/mamba_dlp.conf"
 	#load configurations
+	default_conf_file = "code/conf/mamba_dlp.conf"
 	if args.config_file == None:
 		if (os.path.exists(default_conf_file)):
 			conf_file = default_conf_file
@@ -205,7 +204,6 @@ def main():
 				exit()
 	else:
 		conf_file = args.config
-
 	config = load_conf(conf_file)
 
 	#Start logic

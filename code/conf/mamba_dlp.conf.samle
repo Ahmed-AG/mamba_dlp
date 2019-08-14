@@ -20,7 +20,7 @@
             "data_type": "email_address",
             "enabled": "true",
             "tag_set": {
-              "Key": "email_address",
+              "Key": "email_sensitive_data",
               "Value": "true"
             }
           }

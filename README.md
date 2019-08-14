@@ -17,6 +17,65 @@ Current features of Mamba_dlp:
 	-Json object
 	-Dynamo table
 
+```sh
+$python3 code/mamba_dlp.py --run scan_object --bucket bucket --key cards_and_email.txt --aws_account ************
+                           _                _ _       
+                          | |              | | |      
+ _ __ ___   __ _ _ __ ___ | |__   __ _   __| | |_ __  
+| '_ ` _ \ / _` | '_ ` _ \| '_ \ / _` | / _` | | '_ \ 
+| | | | | | (_| | | | | | | |_) | (_| || (_| | | |_) |
+|_| |_| |_|\__,_|_| |_| |_|_.__/ \__,_| \__,_|_| .__/ 
+                                    ______     | |    
+                                   |______|    |_|    
+Scanning: bucket:cards_and_email.txt
+Action: bucket Tagged: 
+{
+ "TagSet": [
+  {
+   "Key": "pci_sensitive_data",
+   "Value": "true"
+  }
+ ]
+}
+Action: bucket Tagged: 
+{
+ "TagSet": [
+  {
+   "Key": "pci_sensitive_data",
+   "Value": "true"
+  },
+  {
+   "Key": "email_address",
+   "Value": "true"
+  }
+ ]
+}
+Sensitive Data Found:
+{
+  "data_found": [
+    {
+      "data": [
+        "************9534"
+      ],
+      "data_type": "payment_card",
+      "location": "1",
+      "object_id": "***********:bucket:cards_and_email.txt",
+      "object_type": "s3"
+    },
+    {
+      "data": [
+        "a**@**m"
+      ],
+      "data_type": "email_address",
+      "location": "2",
+      "object_id": "***********:bucket:cards_and_email.txt",
+      "object_type": "s3"
+    }
+  ]
+}
+$
+```
+
 Before you begin 
 ----------------
 - **Configuration:**

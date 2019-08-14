@@ -67,7 +67,8 @@ class action():
             tag_set.append(action_tag_set)
             new_tag_set = {'TagSet':tag_set}
             response = bucket_tagging.put(Tagging=new_tag_set)
-            print("Action: "+ resource_arn + " Tagged: " + str(new_tag_set))
+            print("Action: "+ resource_arn + " Tagged: \n" + json.dumps(new_tag_set, sort_keys=True , indent=1))
+
 
         except botocore.exceptions.ClientError as e:
             if e.response['Error']['Message'] == "Cannot provide multiple Tags with the same key":
