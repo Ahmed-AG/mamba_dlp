@@ -17,9 +17,76 @@ Current features of Mamba_dlp:
 	-Json object
 	-Dynamo table
 
+Before you begin 
+----------------
+- **Configuration:**
+	If no configuration file was provided manually, mambda_dlp will check for the default configuration file "code/conf/mamba_dlp.conf".
+
+	If the file does not exist you will be prompted with the option to create one. If you chose "Yes" a quick wizard will build one for you.
+
+	Alternatively. you can manually create a new config file at anytime by using  "--run configure"
+
+	```sh
+	$python3 code/mamba_dlp.py --run configure
+	                           _                _ _       
+	                          | |              | | |      
+	 _ __ ___   __ _ _ __ ___ | |__   __ _   __| | |_ __  
+	| '_ ` _ \ / _` | '_ ` _ \| '_ \ / _` | / _` | | '_ \ 
+	| | | | | | (_| | | | | | | |_) | (_| || (_| | | |_) |
+	|_| |_| |_|\__,_|_| |_| |_|_.__/ \__,_| \__,_|_| .__/ 
+	                                    ______     | |    
+	                                   |______|    |_|    
+	mamba_dlp configure:
+	Building conf/mamba_dlp.conf:
+	Enter aws_account ************
+	Dynamo table name? sensitive_data
+	Configuring Actions
+	Enable tagging of resources upon detection of sensitive data? (true/false): true
+	Data Type: "payment_card" : Enable tagging ? (true/false): true
+	Data Type: "payment_card" : Enter tag_set Key: pci_sensitive_data
+	Data Type: "payment_card" : Enter tag_set Value: true
+	Data Type: "email_address" : Enable tagging ? (true/false): true
+	Data Type: "email_address" : Enter tag_set Key: email_address
+	Data Type: "email_address" : Enter tag_set Value: true
+	conf_file generated:
+	{
+	  "global_conf": {
+	    "actions": [
+	      {
+	        "tagging": [
+	          {
+	            "data_type": "payment_card",
+	            "enabled": "true",
+	            "tag_set": {
+	              "Key": "pci_sensitive_data",
+	              "Value": "true"
+	            }
+	          },
+	          {
+	            "data_type": "email_address",
+	            "enabled": "true",
+	            "tag_set": {
+	              "Key": "email_address",
+	              "Value": "true"
+	            }
+	          }
+	        ]
+	      }
+	    ],
+	    "aws_accounts": [
+	      "************"
+	    ],
+	    "aws_role": "",
+	    "dynamo_table": "sensitive_data"
+	  }
+	}
+	saved to: code/conf/mamba_dlp.conf
+	$
+	```
+
+
 Getting Started 
 ----------------
-
 - **Scan all files in all buckets:**
 	```sh
 	$python3 code/mamba_dlp.py --run full_scan

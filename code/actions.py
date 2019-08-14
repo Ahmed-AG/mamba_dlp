@@ -11,16 +11,16 @@ class action():
     def initiate(self , sensitive_data_object):
         
         for config_action in self.config['global_conf']['actions']:
-            if config_action['enabled'] == "true":
-                #print(json.dumps(sensitive_data_object, sort_keys=True , indent=2))
-                #print(json.dumps(self.config, sort_keys=True , indent=2))
-                
-                tagged_resources=[]
+            #print(json.dumps(sensitive_data_object, sort_keys=True , indent=2))
+            #print(json.dumps(self.config, sort_keys=True , indent=2))
+            
+            tagged_resources=[]
 
-                #loop over all objects
-                for object in sensitive_data_object['data_found']:
-                    #loop over all actions (tags)
-                    for tag in config_action['tagging']:
+            #loop over all objects
+            for object in sensitive_data_object['data_found']:
+                #loop over all actions (tags)
+                for tag in config_action['tagging']:
+                    if tag['enabled'] == "true":
                         if object['data_type'] == tag['data_type']:
                             resource_arn = self.obtain_resource_name(object)
                             resource_data_type = resource_arn + ":" + tag['data_type']
@@ -28,9 +28,9 @@ class action():
                                 tagging_response = self.tag_resource(resource_arn , tag['tag_set'])
                                 if (tagging_response == True):
                                     tagged_resources.append(resource_arn + ":" + tag['data_type'])
-                    #loop over SNS notification
-                    #loopover initiate Lambda
-                #print(tagged_resources)
+                #loop over SNS notification
+                #loopover initiate Lambda
+            #print(tagged_resources)
 
         return
 
