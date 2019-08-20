@@ -1,0 +1,14 @@
+Description: 
+  Parameters:
+    rolename:
+      Type: String
+      Default: mamba_real_time_lambda_role
+    policyname:
+      Type: String
+      Default: mamba_real_time_lambda_policy
+Resources:
+  RealTimeLambdaRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      Rolename: !Ref rolename
+      

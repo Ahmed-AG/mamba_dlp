@@ -7,6 +7,7 @@ import json
 import argparse
 import logging
 import os.path
+import botocore
 
 
 import data_source
@@ -116,6 +117,70 @@ def run_configure():
 	config['global_conf']['actions'].append(tagging)
 	return config
 
+def deploy_realtime_function(aws_account):
+
+	return "arn:aws:lambda:us-east-1:523256993465:function:agent_d_event"
+			
+def deploy_realtime(aws_account , function_arn):
+	client = boto3.client('s3')
+	buckets=client.list_buckets()
+
+	for bucket in buckets['Buckets']:
+		bucket_arn = "arn:aws:s3:::" + bucket['Name']
+		print("**Configuring: " + bucket_arn)
+		
+		print(add_lambda_permission(function_arn , bucket['Name'] ))
+		print(add_bucket_notification(function_arn ,bucket['Name']))
+	
+	return
+
+def add_lambda_permission(function_arn , bucket_name ):
+	try:
+		bucket_arn = "arn:aws:s3:::" + bucket_name
+		statement_id = "mamba_dlp_" + bucket_name
+
+		client = boto3.client('lambda')
+		add_permission = client.add_permission(
+				FunctionName=function_arn,
+				StatementId = statement_id,
+				Action='lambda:invokeFunction',
+				Principal='s3.amazonaws.com',
+				SourceArn = bucket_arn
+				)
+	except botocore.exceptions.ClientError as e:
+		if e.response['Error']['Code'] == "InvalidArgument":
+			return "Error: " + e.response['Error']['Message']
+		elif e.response['Error']['Code'] == "ResourceConflictException":
+			return "Warning: Lambda policy statement ID: " + statement_id + " already exists"
+		else:
+			return e.response
+	
+	return "lambda_permission added!"
+
+def add_bucket_notification(function_arn , bucket_name):
+	try:
+		s3 = boto3.resource('s3')
+		bucket_notification = s3.BucketNotification(bucket_name)
+		response = bucket_notification.put(NotificationConfiguration={'LambdaFunctionConfigurations': [
+				{
+			'LambdaFunctionArn': function_arn,
+			'Events': [
+			's3:ObjectCreated:*'
+			],
+			'Id':'mamba_dlp_realtime'
+			},
+			]})
+		
+	except botocore.exceptions.ClientError as e:
+		if e.response['Error']['Code'] == "AccessDenied":
+			return "Error: " + e.response['Error']['Message']
+		elif e.response['Error']['Code'] == "InvalidArgument":
+			return "Error: " + e.response['Error']['Message']
+		elif e.response['Error']['Message'] == "The statement id (string) provided already exists. Please provide a new statement id, or remove the existing statement.":
+			return "Warning: Lambda policy already exists"
+		else:
+			return e.response
+	return "bucket_notification added!"
 
 def input_radio_choice(question , choices):
 	while (1):
@@ -244,6 +309,12 @@ def main():
 	elif args.run == "configure":
 		conf_file_json = run_configure()
 		save_config_to_file(conf_file_json , default_conf_file)
+	
+	elif args.run == "deploy_realtime":
+		for aws_account in config['global_conf']['aws_accounts']:
+			function_arn = deploy_realtime_function(aws_account)
+			function_arn = "arn:aws:lambda:us-east-1:523256993465:function:agent_d_event"
+			deploy_realtime(aws_account , function_arn)
 				
 	else:
 		print_usage()

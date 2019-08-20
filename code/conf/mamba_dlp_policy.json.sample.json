@@ -20,7 +20,7 @@
             "Sid": "VisualEditor1",
             "Effect": "Allow",
             "Action": "dynamodb:PutItem",
-            "Resource": "arn:aws:dynamodb:us-east-1:523256993465:table/sensitive_data"
+            "Resource": "arn:aws:dynamodb:us-east-1:<AWS ACCOUNT>:table/sensitive_data"
         }
     ]
 }
