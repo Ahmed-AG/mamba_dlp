@@ -17,4 +17,6 @@ aws cloudformation deploy --capabilities CAPABILITY_NAMED_IAM CAPABILITY_IAM \
 	LambdaS3Bucket=$cfn_bucket \
 	LambdaS3Object=$zip_file \
 	DynamoTable=$dynamo_table \
+
+rm $code_dir/$zip_file
 	
