@@ -13,16 +13,10 @@ class sensitive_data():
         return
 
     def load_sensitive_objects(self):
-
         print(response)
-
-
-        #fetch data
-
         return self.sensitive_data
 
     def save_sensitive_data(self, data_object):
-        
         return response
 
     def load_sensitive_object(self,object_id):

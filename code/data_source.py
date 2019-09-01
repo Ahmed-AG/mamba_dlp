@@ -120,4 +120,3 @@ class s3():
 
         #scans the file using the object self.data_finders
         #attach scan results to the self.files_list
-        return 

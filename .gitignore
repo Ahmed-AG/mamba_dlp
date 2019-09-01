@@ -98,7 +98,7 @@ venv.bak/
 .mypy_cache/
 test_data*
 code/conf/mamba_dlp.conf
-code/conf/mamba_dlp_policy.json
+code/conf/mamba_dlp_policy.yaml
 *.DS_Store
 code/lambda_code.zip
 code/notes.txt

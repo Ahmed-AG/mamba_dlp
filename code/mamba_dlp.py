@@ -8,6 +8,7 @@ import argparse
 import logging
 import os.path
 import botocore
+import os
 
 
 import data_source
@@ -58,25 +59,27 @@ def lambda_handler(event, context):
 	return
 
 def display_banner():
-
-    print("                           _                _ _       ")
-    print("                          | |              | | |      ")
-    print(" _ __ ___   __ _ _ __ ___ | |__   __ _   __| | |_ __  ")
-    print("| '_ ` _ \ / _` | '_ ` _ \| '_ \ / _` | / _` | | '_ \ ")
-    print("| | | | | | (_| | | | | | | |_) | (_| || (_| | | |_) |")
-    print("|_| |_| |_|\__,_|_| |_| |_|_.__/ \__,_| \__,_|_| .__/ ")
-    print("                                    ______     | |    ")
-    print("                                   |______|    |_|    ")
-
-    return
+	"""
+	                           _                _ _       
+	                          | |              | | |      
+	 _ __ ___   __ _ _ __ ___ | |__   __ _   __| | |_ __  
+	| '_ ` _ \ / _` | '_ ` _ \| '_ \ / _` | / _` | | '_ \ 
+	| | | | | | (_| | | | | | | |_) | (_| || (_| | | |_) |
+	|_| |_| |_|\__,_|_| |_| |_|_.__/ \__,_| \__,_|_| .__/ 
+	                                    ______     | |    
+	                                   |______|    |_|     
+	"""
+	print(display_banner.__doc__)
 
 def print_usage():
-	print ("Usage: ")
-	print ("mamba_dlp.py --run full_scan")
-	print ("mamba_dlp.py --run scan_object --object <Json Object>")
-	print ("mamba_dlp.py --run scan_object --aws_account <aws account> --bucket <bucket name> --key <key>")
-	return
-
+	"""
+	Usage:
+	 	mamba_dlp.py --run full_scan
+	 	mamba_dlp.py --run scan_object --object <Json Object>
+	 	mamba_dlp.py --run scan_object --aws_account <aws account> --bucket <bucket name> --key <key>
+	 
+	"""
+	print(print_usage.__doc__)
 def run_configure():
 	config ={'global_conf':{}}
 
@@ -117,9 +120,16 @@ def run_configure():
 	config['global_conf']['actions'].append(tagging)
 	return config
 
-def deploy_realtime_function(aws_account):
+def deploy_realtime_function(aws_account , cfn_bucket , dynamo_table):
+	print("*** Running deployment script: deploy/deploy_realtime.sh")
+	os.system(f"sh deploy/deploy_realtime.sh {aws_account} {cfn_bucket} {dynamo_table}")
 
-	return "arn:aws:lambda:us-east-1:523256993465:function:agent_d_event"
+	client = boto3.client('cloudformation')
+	response = client.list_exports()
+	for exports in response['Exports']:
+		if exports['Name'] == 'MambaLambdaArn':
+			mamba_function_arn = exports['Value']
+	return mamba_function_arn
 			
 def deploy_realtime(aws_account , function_arn):
 	client = boto3.client('s3')
@@ -127,12 +137,14 @@ def deploy_realtime(aws_account , function_arn):
 
 	for bucket in buckets['Buckets']:
 		bucket_arn = "arn:aws:s3:::" + bucket['Name']
-		print("**Configuring: " + bucket_arn)
+		print("*** Configuring: " + bucket_arn)
 		
 		print(add_lambda_permission(function_arn , bucket['Name'] ))
 		print(add_bucket_notification(function_arn ,bucket['Name']))
-	
+
 	return
+
+
 
 def add_lambda_permission(function_arn , bucket_name ):
 	try:
@@ -312,8 +324,8 @@ def main():
 	
 	elif args.run == "deploy_realtime":
 		for aws_account in config['global_conf']['aws_accounts']:
-			function_arn = deploy_realtime_function(aws_account)
-			function_arn = "arn:aws:lambda:us-east-1:523256993465:function:agent_d_event"
+			cfn_bucket = input("Enter bucket name to be used for Cloudformation template: ")
+			function_arn = deploy_realtime_function(aws_account , cfn_bucket , config['global_conf']['dynamo_table'])
 			deploy_realtime(aws_account , function_arn)
 				
 	else:

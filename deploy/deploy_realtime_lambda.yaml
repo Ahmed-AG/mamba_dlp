@@ -1,14 +1,88 @@
-Description: 
-  Parameters:
-    rolename:
-      Type: String
-      Default: mamba_real_time_lambda_role
-    policyname:
-      Type: String
-      Default: mamba_real_time_lambda_policy
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Deploy Mamba_dlp Realtime
+
+Parameters:
+  # AccountId:
+  #   Description: Provide the AWS Account ID
+  #   Type: String
+  LambdaS3Bucket:
+    Description: Name of the S3 bucket where the lambda function is stored
+    Type: String
+  LambdaS3Object:
+    Description: Name of the S3 object of the Lambda function
+    Type: String
+  DynamoTable:
+    Description: Name of the Dynamo table
+    Type: String
+
 Resources:
-  RealTimeLambdaRole:
-    Type: 'AWS::IAM::Role'
+  MambaLambda:
+    Type: AWS::Lambda::Function
     Properties:
-      Rolename: !Ref rolename
-      
+      Code:
+        S3Bucket: !Ref LambdaS3Bucket
+        S3Key: !Ref LambdaS3Object
+      Handler: mamba_dlp.lambda_handler
+      Role: !GetAtt 
+        - MambaRole
+        - Arn
+      Runtime: python3.7
+
+  MambaRole:
+    Type: AWS::IAM::Role
+    Properties: 
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal: 
+              Service: 
+                - lambda.amazonaws.com
+            Action: 'sts:AssumeRole'
+      # RoleName: !Join [ "-", [!Sub '${AWS::StackName}',!Ref MambaRole]] 
+
+  mambaPol:
+    Type: AWS::IAM::Policy
+    Properties: 
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: VisualEditor0
+            Effect: Allow
+            Action:
+              - lambda:CreateFunction
+              - cloudformation:SetStackPolicy
+              - s3:GetBucketTagging
+              - s3:ListBucket
+              - cloudformation:UpdateStackSet
+              - cloudformation:CreateChangeSet
+              - cloudformation:DescribeStacks
+              - s3:PutObject
+              - s3:GetObject
+              - s3:PutBucketNotification
+              - lambda:AddPermission
+              - s3:ListAllMyBuckets
+              - cloudformation:CreateStack
+              - s3:PutBucketTagging
+              - cloudformation:UpdateStack
+              - s3:GetObjectTagging
+              - s3:PutObjectTagging
+              - cloudformation:DescribeChangeSet
+              - cloudformation:ExecuteChangeSet
+              - cloudformation:CreateStackSet
+              - lambda:GetPolicy
+            Resource: "*"
+          - Sid: VisualEditor1
+            Effect: Allow
+            Action: dynamodb:PutItem
+            Resource: !Join [ "", ['arn:aws:dynamodb:us-east-1:' , !Ref 'AWS::AccountId' , ":", !Ref DynamoTable ]]
+      # PolicyName: !Join [ "-", [!Sub '${AWS::StackName}',!Ref MambaRole]]
+      Roles:
+        - !Ref MambaRole
+      PolicyName: mamba_policy
+Outputs:
+  MambaLambdaArn:
+    Export:
+      Name: MambaLambdaArn
+    Value:
+      Fn::GetAtt: MambaLambda.Arn
