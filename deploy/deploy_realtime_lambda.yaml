@@ -22,7 +22,7 @@ Resources:
       Code:
         S3Bucket: !Ref LambdaS3Bucket
         S3Key: !Ref LambdaS3Object
-      Handler: mamba_dlp.lambda_handler
+      Handler: code/mamba_dlp.lambda_handler
       Role: !GetAtt 
         - MambaRole
         - Arn
@@ -80,6 +80,26 @@ Resources:
       Roles:
         - !Ref MambaRole
       PolicyName: mamba_policy
+
+  MambaTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+      - AttributeName: object_id
+        AttributeType: S
+      - AttributeName: location
+        AttributeType: N
+      KeySchema:
+      - AttributeName: object_id
+        KeyType: HASH
+      - AttributeName: location
+        KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      TableName: !Ref DynamoTable
+
+
 Outputs:
   MambaLambdaArn:
     Export:
