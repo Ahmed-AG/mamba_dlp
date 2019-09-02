@@ -331,7 +331,6 @@ def main():
 	else:
 		print_usage()
 	    	    
-
-if sys.argv[0] != "/var/runtime/awslambda/bootstrap.py":
+if sys.argv[0] != "/var/runtime/bootstrap":
 	main()
 

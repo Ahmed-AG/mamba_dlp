@@ -4,16 +4,40 @@ Statement:
 - Sid: VisualEditor0
   Effect: Allow
   Action:
+  - lambda:CreateFunction
+  - lambda:GetFunctionConfiguration
+  - cloudformation:SetStackPolicy
+  - s3:GetBucketTagging
+  - s3:ListBucket
+  - cloudformation:ListExports
+  - cloudformation:UpdateStackSet
+  - cloudformation:CreateChangeSet
+  - cloudformation:DescribeStacks
+  - s3:PutObject
   - s3:GetObject
   - s3:PutBucketNotification
-  - s3:GetBucketTagging
+  - lambda:AddPermission
   - s3:ListAllMyBuckets
+  - cloudformation:CreateStack
   - s3:PutBucketTagging
+  - cloudformation:UpdateStack
   - s3:GetObjectTagging
-  - s3:ListBucket
   - s3:PutObjectTagging
+  - cloudformation:DescribeChangeSet
+  - cloudformation:ExecuteChangeSet
+  - cloudformation:CreateStackSet
+  - lambda:GetPolicy
   Resource: "*"
 - Sid: VisualEditor1
   Effect: Allow
-  Action: dynamodb:PutItem
-  Resource: arn:aws:dynamodb:us-east-1:<AWS ACCOUNT>:table/sensitive_data
+  Action:
+  - iam:GetRole
+  - dynamodb:PutItem
+  - dynamodb:CreateTable
+  - dynamodb:DescribeTable
+  - iam:CreateRole
+  - iam:PassRole
+  - iam:PutRolePolicy
+  Resource:
+  - arn:aws:iam::<AWS ACCOUNT>:role/mamba-realtime-stack*
+  - arn:aws:dynamodb:us-east-1:<AWS ACCOUNT>:table/sensitive_data

@@ -144,6 +144,52 @@ Before you begin
 	```
 
 
+
+
+- **Realtime Deployment:**
+	--run deploy_realtime option will do three things:
+		1) Deploy mamba_dlp as a lambda function
+		2) Configure all buckets to call mamba_dlp upon file uploads to scan that file
+		3) Build Dynamo table
+	
+	To configure this option run the following:
+
+	```sh
+	$python3 code/mamba_dlp.py --run deploy_realtime
+		                           _                _ _       
+		                          | |              | | |      
+		 _ __ ___   __ _ _ __ ___ | |__   __ _   __| | |_ __  
+		| '_ ` _ \ / _` | '_ ` _ \| '_ \ / _` | / _` | | '_ \ 
+		| | | | | | (_| | | | | | | |_) | (_| || (_| | | |_) |
+		|_| |_| |_|\__,_|_| |_| |_|_.__/ \__,_| \__,_|_| .__/ 
+		                                    ______     | |    
+		                                   |______|    |_|     
+	Enter bucket name to be used for Cloudformation template: bucket9999
+	*** Running deployment script: deploy/deploy_realtime.sh
+	  adding: actions.py (deflated 70%)
+	  adding: aws.py (deflated 38%)
+	  adding: conf/ (stored 0%)
+	  adding: conf/mamba_dlp.conf (deflated 65%)
+	  adding: conf/mamba_dlp_policy.yaml.sample (deflated 61%)
+	  adding: conf/mamba_dlp_policy.yaml (deflated 61%)
+	  adding: conf/mamba_dlp.conf.samle (deflated 67%)
+	  adding: data_finder.py (deflated 70%)
+	  adding: data_source.py (deflated 75%)
+	  adding: mamba_dlp.py (deflated 71%)
+	  adding: state_object.py (deflated 65%)
+	upload: ./lambda_code.zip to s3://bucket9999/lambda_code.zip     
+	Waiting for changeset to be created..
+	Waiting for stack create/update to complete
+	Successfully created/updated stack - mamba-realtime-stack
+	*** Configuring: arn:aws:s3:::bucket8888
+	lambda_permission added!
+	bucket_notification added!
+	*** Configuring: arn:aws:s3:::bucket9999
+	lambda_permission added!
+	bucket_notification added!
+	$
+```
+
 Getting Started 
 ----------------
 - **Scan all files in all buckets:**

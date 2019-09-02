@@ -22,11 +22,12 @@ Resources:
       Code:
         S3Bucket: !Ref LambdaS3Bucket
         S3Key: !Ref LambdaS3Object
-      Handler: code/mamba_dlp.lambda_handler
+      Handler: mamba_dlp.lambda_handler
       Role: !GetAtt 
         - MambaRole
         - Arn
       Runtime: python3.7
+      Timeout: 900
 
   MambaRole:
     Type: AWS::IAM::Role
@@ -51,9 +52,11 @@ Resources:
             Effect: Allow
             Action:
               - lambda:CreateFunction
+              - lambda:GetFunctionConfiguration
               - cloudformation:SetStackPolicy
               - s3:GetBucketTagging
               - s3:ListBucket
+              - cloudformation:ListExports
               - cloudformation:UpdateStackSet
               - cloudformation:CreateChangeSet
               - cloudformation:DescribeStacks
@@ -74,9 +77,19 @@ Resources:
             Resource: "*"
           - Sid: VisualEditor1
             Effect: Allow
-            Action: dynamodb:PutItem
-            Resource: !Join [ "", ['arn:aws:dynamodb:us-east-1:' , !Ref 'AWS::AccountId' , ":", !Ref DynamoTable ]]
-      # PolicyName: !Join [ "-", [!Sub '${AWS::StackName}',!Ref MambaRole]]
+            Action:
+            - iam:GetRole
+            - dynamodb:PutItem
+            - dynamodb:CreateTable
+            - dynamodb:DescribeTable
+            - iam:CreateRole
+            - iam:PassRole
+            - iam:PutRolePolicy
+            Resource:
+            #- arn:aws:iam::523256993465:role/mamba-realtime-stack*
+            #- arn:aws:dynamodb:us-east-1:523256993465:table/sensitive_data
+            - !Join [ "", ['arn:aws:dynamodb:us-east-1:' , !Ref 'AWS::AccountId' , ":table/", !Ref DynamoTable ]]
+            - !Join [ "", ['arn:aws:iam::' , !Ref 'AWS::AccountId' , ":role/mamba-realtime-stack*" ]]
       Roles:
         - !Ref MambaRole
       PolicyName: mamba_policy
