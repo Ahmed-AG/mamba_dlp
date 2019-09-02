@@ -143,9 +143,6 @@ Before you begin
 	$
 	```
 
-
-
-
 - **Realtime Deployment:**
 	--run deploy_realtime option will do three things:
 		1) Deploy mamba_dlp as a lambda function
