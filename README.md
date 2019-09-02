@@ -188,7 +188,7 @@ Before you begin
 	lambda_permission added!
 	bucket_notification added!
 	$
-```
+	```
 
 Getting Started 
 ----------------
