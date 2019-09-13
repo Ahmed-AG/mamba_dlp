@@ -1,0 +1,33 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Deploy Mamba_dlp Dynamo Table
+
+Parameters:
+  DynamoTable:
+    Description: Name of the Dynamo table
+    Type: String
+
+Resources:
+  MambaTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+      - AttributeName: object_id
+        AttributeType: S
+      - AttributeName: location
+        AttributeType: N
+      KeySchema:
+      - AttributeName: object_id
+        KeyType: HASH
+      - AttributeName: location
+        KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      TableName: !Ref DynamoTable
+
+Outputs:
+  MambaTable:
+    Export:
+      Name: MambaTable
+    Value:
+      Fn::GetAtt: MambaTable.Arn

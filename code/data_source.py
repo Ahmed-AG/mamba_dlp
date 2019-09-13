@@ -1,6 +1,6 @@
 
 import boto3
-import aws
+import utils
 import json
 import botocore
 
@@ -13,11 +13,9 @@ class s3():
         self.aws_role=aws_role
 #        self.objects=self.find_objects()
 
-
     def find_objects(self):
 
         objects={'objects':[]}
-
         for aws_account in self.aws_accounts:
     
             #assumedRoleObject=aws.assume_role(aws_account,self.aws_role)         

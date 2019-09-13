@@ -2,7 +2,6 @@ import boto3
 import json
 import botocore
 
-
 class action():
     def __init__(self , config):
         self.config = config
@@ -31,7 +30,6 @@ class action():
                 #loop over SNS notification
                 #loopover initiate Lambda
             #print(tagged_resources)
-
         return
 
     def obtain_resource_name(self , object):

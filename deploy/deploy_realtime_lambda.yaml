@@ -2,9 +2,6 @@ AWSTemplateFormatVersion: "2010-09-09"
 Description: Deploy Mamba_dlp Realtime
 
 Parameters:
-  # AccountId:
-  #   Description: Provide the AWS Account ID
-  #   Type: String
   LambdaS3Bucket:
     Description: Name of the S3 bucket where the lambda function is stored
     Type: String
@@ -12,7 +9,7 @@ Parameters:
     Description: Name of the S3 object of the Lambda function
     Type: String
   DynamoTable:
-    Description: Name of the Dynamo table
+    Description: Name of the Dynamo Table
     Type: String
 
 Resources:
@@ -93,25 +90,6 @@ Resources:
       Roles:
         - !Ref MambaRole
       PolicyName: mamba_policy
-
-  MambaTable:
-    Type: AWS::DynamoDB::Table
-    Properties:
-      AttributeDefinitions:
-      - AttributeName: object_id
-        AttributeType: S
-      - AttributeName: location
-        AttributeType: N
-      KeySchema:
-      - AttributeName: object_id
-        KeyType: HASH
-      - AttributeName: location
-        KeyType: RANGE
-      ProvisionedThroughput:
-        ReadCapacityUnits: 5
-        WriteCapacityUnits: 5
-      TableName: !Ref DynamoTable
-
 
 Outputs:
   MambaLambdaArn:
