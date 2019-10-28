@@ -176,7 +176,7 @@ def main():
 			exit()
 
 	elif args.run == "configure":
-		deploy.y(default_conf_file)
+		deploy.run_configure(default_conf_file)
 	
 	elif args.run == "deploy_realtime":
 		for aws_account in config['global_conf']['aws_accounts']:

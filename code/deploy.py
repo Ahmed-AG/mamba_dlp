@@ -14,7 +14,15 @@ import utils
 def run_configure(default_conf_file):
 	print("*** mamba_dlp configuration wizard")
 	#Generate conf file
-	print(f"Checking default conf file {default_conf_file}: {os.path.exists(default_conf_file)}")
+	default_conf_file_exists = os.path.exists(default_conf_file)
+	if (default_conf_file_exists):
+		default_conf_file_content = utils.load_conf(default_conf_file)
+	else:
+		default_conf_file_content = ""
+
+	print(f"Checking default conf file {default_conf_file}: {default_conf_file_exists}")
+	print(json.dumps(default_conf_file_content , indent =2))
+
 	if (utils.input_radio_choice("Generate conf file? (y/n): ",["y","n"]) == "y"):
 		conf_file_json = generate_conf_file(default_conf_file)
 		config = conf_file_json
