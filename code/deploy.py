@@ -12,18 +12,20 @@ import os
 import utils
 
 def run_configure(default_conf_file):
-	print("*** mamba_dlp configuration wizard")
+	print("*** Welcome to mamba_dlp configuration wizard ***")
 	#Generate conf file
+	print("*** Configuring mamba_dlp.conf ***")
+	
 	default_conf_file_exists = os.path.exists(default_conf_file)
 	if (default_conf_file_exists):
 		default_conf_file_content = utils.load_conf(default_conf_file)
 	else:
 		default_conf_file_content = ""
 
-	print(f"Checking default conf file {default_conf_file}: {default_conf_file_exists}")
+	print(f"* Checking default conf file {default_conf_file}: {default_conf_file_exists}")
 	print(json.dumps(default_conf_file_content , indent =2))
 
-	if (utils.input_radio_choice("Generate conf file? (y/n): ",["y","n"]) == "y"):
+	if (utils.input_radio_choice("Generate new conf file? (y/n): ",["y","n"]) == "y"):
 		conf_file_json = generate_conf_file(default_conf_file)
 		config = conf_file_json
 		utils.save_config_to_file(conf_file_json , default_conf_file)
@@ -34,12 +36,14 @@ def run_configure(default_conf_file):
 			print("Default conf file \"" + default_conf_file + "\" Not found!")
 			exit()
 	#deloy Dynamotable
-	
+	print("\n*** Configuring Dynamo_table ***")
+
 	table_name = config['global_conf']['dynamo_table']
-	print(f"Checking Dynamo table: {table_name}: {check_dynamo_table(table_name)}")
+	#print(f"Checking Dynamo table: {table_name}: {check_dynamo_table(table_name)}")
 	deploy_dynamo_table(table_name)
 	
 	#configure realtime
+	print("\n*** Configuring real_time scanning lambda ***")
 	if (utils.input_radio_choice("Configure mamba_dlp realtime? (y/n): ",["y","n"]) == "y"):
 		for aws_account in config['global_conf']['aws_accounts']:
 			cfn_bucket = input("Enter bucket name to be used for Cloudformation template: ")
@@ -47,7 +51,7 @@ def run_configure(default_conf_file):
 			deploy_realtime(aws_account , function_arn)
 
 def check_dynamo_table(table_name):
-
+	#Function to be added
 	return False
 
 def deploy_dynamo_table(table_name):
@@ -64,7 +68,7 @@ def deploy_dynamo_table(table_name):
 def generate_conf_file(default_conf_file):
 	config ={'global_conf':{}}
 
-	print("*** mamba_dlp generate conf file: " + default_conf_file)
+	print("*** mamba_dlp generate conf file: " + default_conf_file + "***")
 	config['global_conf']['aws_accounts']=[]
 	config['global_conf']['aws_role']=""
 
@@ -117,7 +121,7 @@ def deploy_realtime(aws_account , function_arn):
 
 	for bucket in buckets['Buckets']:
 		bucket_arn = "arn:aws:s3:::" + bucket['Name']
-		print("*** Configuring: " + bucket_arn)
+		print("** Configuring: " + bucket_arn + "**")
 		
 		print(add_lambda_permission(function_arn , bucket['Name'] ))
 		print(add_bucket_notification(function_arn ,bucket['Name']))
